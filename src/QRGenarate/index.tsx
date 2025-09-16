@@ -1,143 +1,183 @@
-import { useState } from 'react'
-import QRCode from 'qrcode'
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { useForm } from '@tanstack/react-form';
+import QRCode from 'qrcode';
+import { useState } from 'react';
+import { z } from 'zod';
+import Button from '../components/Button';
+
+// Zod schema for validation
+const qrInputSchema = z.object({
+  inputText: z
+    .string()
+    .min(1, 'Please enter a URL or text')
+    .max(2000, 'Input text is too long (max 2000 characters)')
+    .refine(
+      (val) => {
+        // Allow URLs, text, or email addresses
+        const urlPattern = /^https?:\/\/.+/i;
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return urlPattern.test(val) || emailPattern.test(val) || val.length > 0;
+      },
+      {
+        message: 'Please enter a valid URL, email, or text',
+      },
+    ),
+});
+
+type QRFormData = z.infer<typeof qrInputSchema>;
 
 function QRGenerate() {
-  const [inputText, setInputText] = useState('')
-  const [qrCodeUrl, setQrCodeUrl] = useState('')
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [error, setError] = useState('')
+  const [qrCodeUrl, setQrCodeUrl] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const generateQRCode = async () => {
-    if (!inputText.trim()) {
-      setError('Please enter a URL or text')
-      return
-    }
+  // TanStack Form setup
+  const form = useForm({
+    defaultValues: {
+      inputText: '',
+    } as QRFormData,
+    validators: {
+      onChange: qrInputSchema,
+    },
+    onSubmit: async ({ value }) => {
+      setIsGenerating(true);
+      setQrCodeUrl('');
 
-    setIsGenerating(true)
-    setError('')
-
-    try {
-      // Generate QR code as data URL
-      const url = await QRCode.toDataURL(inputText, {
-        width: 300,
-        margin: 2,
-        color: {
-          dark: '#000000',
-          light: '#FFFFFF',
-        },
-      })
-      setQrCodeUrl(url)
-    } catch (err) {
-      setError('Failed to generate QR code')
-      console.error('QR Code generation error:', err)
-    } finally {
-      setIsGenerating(false)
-    }
-  }
+      try {
+        // Generate QR code as data URL
+        const url = await QRCode.toDataURL(value.inputText, {
+          width: 300,
+          margin: 2,
+          color: {
+            dark: '#000000',
+            light: '#FFFFFF',
+          },
+        });
+        setQrCodeUrl(url);
+      } catch (err) {
+        console.error('QR Code generation error:', err);
+        // Handle error through form state
+        form.setFieldMeta('inputText', (prev) => ({
+          ...prev,
+          errors: ['Failed to generate QR code'],
+        }));
+      } finally {
+        setIsGenerating(false);
+      }
+    },
+  });
 
   const downloadQRCode = () => {
-    if (!qrCodeUrl) return
+    if (!qrCodeUrl) return;
 
-    const link = document.createElement('a')
-    link.download = 'qrcode.png'
-    link.href = qrCodeUrl
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
+    const link = document.createElement('a');
+    link.download = 'qrcode.png';
+    link.href = qrCodeUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const clearQRCode = () => {
-    setQrCodeUrl('')
-    setInputText('')
-    setError('')
-  }
+    setQrCodeUrl('');
+    form.reset();
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">QR Code Generator</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8">
+      <div className="mx-auto max-w-2xl">
+        <h1 className="mb-8 text-center font-bold text-4xl text-gray-800">
+          QR Code Generator
+        </h1>
 
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="rounded-lg bg-white p-8 shadow-lg">
           {/* Input Section */}
-          <div className="mb-8">
-            <label htmlFor="qr-input" className="block text-sm font-medium text-gray-700 mb-2">
-              Enter URL or Text
-            </label>
-            <div className="flex gap-4">
-              <input
-                id="qr-input"
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder="https://example.com or any text..."
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                onKeyPress={(e) => e.key === 'Enter' && generateQRCode()}
-              />
-              <button
-                onClick={generateQRCode}
-                disabled={isGenerating}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
-              >
-                {isGenerating ? 'Generating...' : 'Generate'}
-              </button>
-            </div>
-            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-          </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+            className="mb-8"
+          >
+            <form.Field
+              name="inputText"
+              children={(field) => (
+                <>
+                  <label
+                    htmlFor="qr-input"
+                    className="mb-2 block font-medium text-gray-700 text-sm"
+                  >
+                    Enter URL or Text
+                  </label>
+                  <div className="flex gap-4">
+                    <input
+                      id="qr-input"
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="https://example.com or any text..."
+                      className={`flex-1 rounded-lg border px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500 ${
+                        field.state.meta.errors.length > 0
+                          ? 'border-red-300 focus:ring-red-500'
+                          : 'border-gray-300'
+                      }`}
+                    />
+                    <Button
+                      disabled={isGenerating || !field.state.value.trim()}
+                      variant="primary"
+                      label={isGenerating ? 'Generating...' : 'Generate'}
+                      type="submit"
+                    />
+                  </div>
+                  {field.state.meta.errors.length > 0 && (
+                    <p className="m-1 text-red-500 text-sm">
+                      {typeof field.state.meta.errors[0] === 'string'
+                        ? field.state.meta.errors[0]
+                        : field.state.meta.errors[0]?.message}
+                    </p>
+                  )}
+                </>
+              )}
+            />
+          </form>
 
           {/* QR Code Display Section */}
           {qrCodeUrl && (
             <div className="text-center">
-              <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                <h3 className="text-lg font-semibold text-gray-700 mb-4">Generated QR Code</h3>
+              <div className="mb-6 rounded-lg bg-gray-50 p-6">
+                <h3 className="mb-4 font-semibold text-gray-700 text-lg">
+                  Generated QR Code
+                </h3>
                 <div className="flex justify-center">
                   <img
                     src={qrCodeUrl}
                     alt="Generated QR Code"
-                    className="border border-gray-200 rounded-lg shadow-sm"
+                    className="rounded-lg border border-gray-200 shadow-sm"
                   />
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-4 justify-center">
-                <button
+              <div className="flex justify-center gap-4">
+                <Button
                   onClick={downloadQRCode}
-                  className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center gap-2"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                  Download PNG
-                </button>
-                <button
+                  variant="success"
+                  label="Download PNG"
+                  icon={faDownload}
+                />
+                <Button
                   onClick={clearQRCode}
-                  className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
-                >
-                  Clear
-                </button>
+                  variant="secondary"
+                  label="Clear"
+                />
               </div>
             </div>
           )}
-
-          {/* Instructions */}
-          <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-            <h4 className="font-semibold text-blue-800 mb-2">How to use:</h4>
-            <ul className="text-blue-700 text-sm space-y-1">
-              <li>• Enter any URL (like https://example.com) or text</li>
-              <li>• Click "Generate" to create your QR code</li>
-              <li>• Use "Download PNG" to save the QR code to your device</li>
-              <li>• QR codes can be scanned by any smartphone camera</li>
-            </ul>
-          </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default QRGenerate
+export default QRGenerate;
