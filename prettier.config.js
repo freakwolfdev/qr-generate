@@ -1,0 +1,9 @@
+// prettier.config.js
+export default {
+  semi: false,
+  singleQuote: true,
+  trailingComma: 'all',
+  tabWidth: 2,
+  printWidth: 100,
+  endOfLine: 'lf',
+}
