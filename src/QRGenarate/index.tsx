@@ -22,6 +22,7 @@ const qrInputSchema = z.object({
         message: 'Please enter a valid URL, email, or text',
       },
     ),
+  color: z.string().min(1, 'Please enter a color').optional().nullable(),
 });
 
 type QRFormData = z.infer<typeof qrInputSchema>;
@@ -34,6 +35,7 @@ function QRGenerate() {
   const form = useForm({
     defaultValues: {
       inputText: '',
+      color: '#000000',
     } as QRFormData,
     validators: {
       onChange: qrInputSchema,
@@ -48,7 +50,7 @@ function QRGenerate() {
           width: 300,
           margin: 2,
           color: {
-            dark: '#000000',
+            dark: value.color ?? '#000000',
             light: '#FFFFFF',
           },
         });
@@ -97,12 +99,12 @@ function QRGenerate() {
               e.stopPropagation();
               form.handleSubmit();
             }}
-            className="mb-8"
+            className="flex flex-col gap-4"
           >
             <form.Field
               name="inputText"
               children={(field) => (
-                <>
+                <div className="flex flex-col gap-2">
                   <label
                     htmlFor="qr-input"
                     className="mb-2 block font-medium text-gray-700 text-sm"
@@ -123,12 +125,6 @@ function QRGenerate() {
                           : 'border-gray-300'
                       }`}
                     />
-                    <Button
-                      disabled={isGenerating || !field.state.value.trim()}
-                      variant="primary"
-                      label={isGenerating ? 'Generating...' : 'Generate'}
-                      type="submit"
-                    />
                   </div>
                   {field.state.meta.errors.length > 0 && (
                     <p className="m-1 text-red-500 text-sm">
@@ -137,9 +133,55 @@ function QRGenerate() {
                         : field.state.meta.errors[0]?.message}
                     </p>
                   )}
-                </>
+                </div>
               )}
             />
+            <form.Field
+              name="color"
+              children={(field) => (
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="qr-input"
+                    className="mb-2 block font-medium text-gray-700 text-sm"
+                  >
+                    Choose Color for QR Code
+                  </label>
+                  <div className="flex gap-4">
+                    <input
+                      id="qr-color"
+                      name={field.name}
+                      value={field.state.value ?? ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      className={`h-10 flex-1 rounded-lg border p-2 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500 ${
+                        field.state.meta.errors.length > 0
+                          ? 'border-red-300 focus:ring-red-500'
+                          : 'border-gray-300'
+                      }`}
+                      type="color"
+                    />
+                  </div>
+                </div>
+              )}
+            />
+            <form.Subscribe
+              selector={(state) => [
+                state.isSubmitting,
+                state.canSubmit,
+                state.isDefaultValue,
+              ]}
+            >
+              {([isSubmitting, canSubmit, isDefaultValue]) => {
+                return (
+                  <Button
+                    disabled={isSubmitting || !canSubmit || isDefaultValue}
+                    variant="primary"
+                    label={isGenerating ? 'Generating...' : 'Generate'}
+                    type="submit"
+                  />
+                );
+              }}
+            </form.Subscribe>
           </form>
 
           {/* QR Code Display Section */}

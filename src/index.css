@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
 .btn {
-  @apply rounded-lg px-6 py-3 font-medium text-white transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed;
+  @apply rounded-lg px-6 py-3 font-medium text-white transition-colors disabled:bg-gray-400
+  hover:bg-gray-700 disabled:cursor-not-allowed;
 }
 
 .btn-primary {
