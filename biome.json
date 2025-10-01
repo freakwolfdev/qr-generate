@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
   "assist": {
     "actions": {
       "source": {
@@ -39,7 +39,8 @@
           }
         },
         "noDocumentImportInPage": "error",
-        "noHeadImportInDocument": "error"
+        "noHeadImportInDocument": "error",
+        "noUnknownAtRules": "off"
       },
       "style": {
         "useTemplate": "error",
@@ -69,14 +70,12 @@
         "noImgElement": "off"
       },
       "nursery": {
-        "noUnwantedPolyfillio": "error",
-        "useGoogleFontPreconnect": "error",
         "useSortedClasses": {
           "level": "error",
           "fix": "safe",
           "options": {
             "attributes": ["className", "classList", "panelClassName"],
-            "functions": ["cx", "clsx", "cva", "tw", "twMerge"]
+            "functions": ["cx", "cva", "tw"]
           }
         }
       }
@@ -90,14 +89,11 @@
     "lineWidth": 80,
     "formatWithErrors": true,
     "includes": [
-      "**",
+      "**/*.{js,ts,jsx,tsx,json,jsonc,css,md}",
       "!**/node_modules/**",
-      "!**/build/**",
+      "!**/dist/**",
       "!**/coverage/**",
-      "!**/.next/**",
-      "!**/public/**",
-      "!**/src/lib/$path.ts",
-      "!**/eslint.config.mjs"
+      "!**/build/**"
     ]
   },
   "javascript": {

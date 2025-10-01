@@ -1,153 +1,28 @@
 {
-    // Set Biome as the default formatter for relevant languages
-    "editor.defaultFormatter": "biomejs.biome",
-    "biome.requireConfiguration": true,
-    "[javascript]": {
-      "editor.defaultFormatter": "biomejs.biome"
-    },
-    "[typescript]": {
-      "editor.defaultFormatter": "biomejs.biome"
-    },
-    "[javascriptreact]": {
-      "editor.defaultFormatter": "biomejs.biome"
-    },
-    "[typescriptreact]": {
-      "editor.defaultFormatter": "biomejs.biome"
-    },
-    "[json]": {
-      "editor.defaultFormatter": "biomejs.biome"
-    },
-    "[jsonc]": {
-      "editor.defaultFormatter": "biomejs.biome"
-    },
-    // Add other languages like `[html]`, `[css]`, `[markdown]` if you want Biome to format them.
-    // Refer to Biome's documentation for supported file types.
-    // Enable Format On Save (Highly Recommended)
-    "editor.formatOnSave": true,
-    // Enable Code Actions On Save (for linting auto-fixes)
-    // This tells VS Code to run specific code actions (like Biome's fixes) on save.
-    "editor.codeActionsOnSave": {
-      "source.organizeImports.biome": "explicit",
-      "source.fixAll.biome": "explicit"
-    },
-    // Disable other formatters if they conflict with Biome
-    "editor.wordWrapColumn": 80,
-    "editor.wordWrap": "on",
-    "tailwindCSS.experimental.classRegex": [
-      ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-      ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-    ],
-    "tailwindCSS.includeLanguages": {
-      "typescript": "javascript",
-      "typescriptreact": "javascript"
-    },
-    "tailwindCSS.emmetCompletions": true,
-    "tailwindCSS.validate": true,
-    "tailwindCSS.hovers": true,
-    "tailwindCSS.suggestions": true,
-    "tailwindCSS.codeActions": true,
-    "tailwindCSS.files.exclude": [
-      "**/.git/**",
-      "**/node_modules/**",
-      "**/.next/**",
-      "**/*.test.{js,ts,jsx,tsx}",
-      "**/*.spec.{js,ts,jsx,tsx}",
-      "**/*.stories.{js,ts,jsx,tsx}"
-    ],
-    "tailwindCSS.inspectPort": null,
-    "todo-tree.highlights.customHighlight": {
-      "@TODO": {
-        "icon": "pin",
-        "iconColour": "#2196F3",
-        "foreground": "#2196F3",
-        "type": "text",
-        "gutterIcon": true
-      },
-      "@FIXME": {
-        "icon": "law",
-        "iconColour": "#7824ff",
-        "foreground": "#7824ff",
-        "type": "text",
-        "gutterIcon": true
-      },
-      "@HACK": {
-        "icon": "hubot",
-        "iconColour": "#5470ff",
-        "foreground": "#5470ff",
-        "type": "text",
-        "gutterIcon": true
-      },
-      "@BUG": {
-        "icon": "bug",
-        "iconColour": "#ff0000",
-        "foreground": "#ff0000",
-        "type": "text"
-      },
-      "@REFACTOR": {
-        "icon": "cpu",
-        "iconColour": "#BEF264",
-        "foreground": "#BEF264",
-        "type": "text"
-      },
-      "@NEW": {
-        "icon": "heart-fill",
-        "iconColour": "#E91E63",
-        "foreground": "#E91E63",
-        "type": "text",
-        "gutterIcon": true
-      },
-      "@API": {
-        "icon": "flame",
-        "iconColour": "#4DB6AC",
-        "foreground": "#4DB6AC",
-        "type": "text"
-      },
-      "@CHANGE": {
-        "icon": "pencil",
-        "iconColour": "#f7552c",
-        "foreground": "#f7552c",
-        "type": "text",
-        "gutterIcon": true
-      }
-    },
-    "tailwindCSS.classAttributes": [
-      "class",
-      "className",
-      "ClassName",
-      ".*ClassName*"
-    ],
-    "cSpell.words": [
-      "authprovider",
-      "authtype",
-      "casl",
-      "Codekeys",
-      "Entra",
-      "fontawesome",
-      "fortawesome",
-      "headlessui",
-      "hookform",
-      "IDPR",
-      "Lightroom",
-      "nextauth",
-      "nextjs",
-      "Photoshop",
-      "picklists",
-      "PLST",
-      "serverloader",
-      "setvalue",
-      "SSOURL",
-      "tanstack",
-      "TCASL",
-      "tenantdomain",
-      "tenantparameterfieldtype",
-      "timesheet",
-      "usertitle",
-      "yesno",
-      "pida",
-      "mtsx",
-      "elementx",
-      "mjs",
-      "mjsx"
-    ]
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "biomejs.biome"
   }
-  
+}
