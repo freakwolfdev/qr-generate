@@ -1,6 +1,6 @@
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from '@tanstack/react-form';
-import QRCode from 'qrcode';
+import QRCodeStyling from 'qr-code-styling';
 import { useState } from 'react';
 import { z } from 'zod';
 import Background from '../components/Background';
@@ -23,7 +23,16 @@ const qrInputSchema = z.object({
         message: 'Please enter a valid URL, email, or text',
       },
     ),
-  color: z.string().min(1, 'Please enter a color').optional().nullable(),
+  foregroundColor: z
+    .string()
+    .min(1, 'Please enter a foreground color')
+    .optional()
+    .nullable(),
+  backgroundColor: z
+    .string()
+    .min(1, 'Please enter a background color')
+    .optional()
+    .nullable(),
 });
 
 type QRFormData = z.infer<typeof qrInputSchema>;
@@ -36,7 +45,8 @@ function QRGenerate() {
   const form = useForm({
     defaultValues: {
       inputText: '',
-      color: '#000000',
+      foregroundColor: '#000000',
+      backgroundColor: '#FFFFFF',
     } as QRFormData,
     validators: {
       onChange: qrInputSchema,
@@ -46,16 +56,44 @@ function QRGenerate() {
       setQrCodeUrl('');
 
       try {
-        // Generate QR code as data URL
-        const url = await QRCode.toDataURL(value.inputText, {
+        // Create QR code styling instance
+        const qrCode = new QRCodeStyling({
           width: 300,
-          margin: 2,
-          color: {
-            dark: value.color ?? '#000000',
-            light: '#FFFFFF',
+          height: 300,
+          type: 'svg',
+          data: value.inputText,
+          image: '',
+          dotsOptions: {
+            color: value.foregroundColor ?? '#000000',
+            type: 'rounded',
+          },
+          backgroundOptions: {
+            color: value.backgroundColor ?? '#FFFFFF',
+          },
+          cornersSquareOptions: {
+            color: value.foregroundColor ?? '#000000',
+            type: 'rounded',
+          },
+          cornersDotOptions: {
+            color: value.foregroundColor ?? '#000000',
+            type: 'dot',
           },
         });
-        setQrCodeUrl(url);
+
+        // Generate QR code as data URL
+        const rawData = await qrCode.getRawData('png');
+        if (rawData) {
+          let url: string;
+          if (rawData instanceof Blob) {
+            url = URL.createObjectURL(rawData);
+          } else {
+            // Handle Buffer case - convert to Uint8Array first
+            const uint8Array = new Uint8Array(rawData);
+            const blob = new Blob([uint8Array], { type: 'image/png' });
+            url = URL.createObjectURL(blob);
+          }
+          setQrCodeUrl(url);
+        }
       } catch (err) {
         console.error('QR Code generation error:', err);
         // Handle error through form state
@@ -147,19 +185,20 @@ function QRGenerate() {
                 </div>
               )}
             />
+            {/* Foreground Color Field */}
             <form.Field
-              name="color"
+              name="foregroundColor"
               children={(field) => (
                 <div className="flex animate-fade-in flex-col gap-3">
                   <label
-                    htmlFor="qr-color"
+                    htmlFor="qr-foreground-color"
                     className="mb-2 block font-semibold text-gray-800 text-lg"
                   >
-                    Choose Color for QR Code
+                    QR Code Color (Foreground)
                   </label>
                   <div className="flex items-center gap-4">
                     <input
-                      id="qr-color"
+                      id="qr-foreground-color"
                       name={field.name}
                       value={field.state.value ?? ''}
                       onBlur={field.handleBlur}
@@ -174,6 +213,41 @@ function QRGenerate() {
                     <div className="flex-1 rounded-xl border border-indigo-100 bg-gradient-to-r from-indigo-50 to-cyan-50 px-4 py-3">
                       <span className="font-medium text-gray-700">
                         Selected: {field.state.value || '#000000'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            />
+
+            {/* Background Color Field */}
+            <form.Field
+              name="backgroundColor"
+              children={(field) => (
+                <div className="flex animate-fade-in flex-col gap-3">
+                  <label
+                    htmlFor="qr-background-color"
+                    className="mb-2 block font-semibold text-gray-800 text-lg"
+                  >
+                    Background Color
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <input
+                      id="qr-background-color"
+                      name={field.name}
+                      value={field.state.value ?? ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      className={`h-12 w-20 cursor-pointer rounded-xl border-2 border-indigo-200 outline-none transition-all duration-300 hover:scale-110 hover:shadow-lg focus:border-transparent focus:ring-2 focus:ring-indigo-500 ${
+                        field.state.meta.errors.length > 0
+                          ? 'border-red-400 focus:ring-red-300'
+                          : 'border-indigo-200 focus:ring-indigo-500'
+                      }`}
+                      type="color"
+                    />
+                    <div className="flex-1 rounded-xl border border-indigo-100 bg-gradient-to-r from-indigo-50 to-cyan-50 px-4 py-3">
+                      <span className="font-medium text-gray-700">
+                        Selected: {field.state.value || '#FFFFFF'}
                       </span>
                     </div>
                   </div>
