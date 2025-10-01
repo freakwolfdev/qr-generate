@@ -1,38 +1,61 @@
 @import "tailwindcss";
 
-.btn {
-  @apply rounded-lg px-6 py-3 font-medium text-white transition-colors disabled:bg-gray-400
-  hover:bg-gray-700 disabled:cursor-not-allowed;
+/* Custom animations that can't be replaced with Tailwind */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
-.btn-primary {
-  @apply bg-blue-600 hover:bg-blue-700;
+/* Custom button shimmer effect that can't be replaced with Tailwind */
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
 }
 
-.btn-secondary {
-  @apply bg-gray-600 hover:bg-gray-700;
+.btn:hover::before {
+  left: 100%;
 }
 
-.btn-success {
-  @apply bg-green-600 hover:bg-green-700;
+/* Loading animation for generating state */
+.btn.loading {
+  position: relative;
+  color: transparent;
 }
 
-.btn-danger {
-  @apply bg-red-600 hover:bg-red-700;
+.btn.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-.btn-warning {
-  @apply bg-yellow-500 hover:bg-yellow-600 text-black;
-}
-
-.btn-info {
-  @apply bg-cyan-600 hover:bg-cyan-700;
-}
-
-.btn-light {
-  @apply bg-gray-100 hover:bg-gray-200 text-gray-900;
-}
-
-.btn-dark {
-  @apply bg-gray-900 hover:bg-black;
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

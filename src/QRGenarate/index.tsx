@@ -85,13 +85,18 @@ function QRGenerate() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8">
-      <div className="mx-auto max-w-2xl">
-        <h1 className="mb-8 text-center font-bold text-4xl text-gray-800">
-          QR Code Generator
-        </h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 px-4 py-8">
+      <div className="relative z-10 mx-auto max-w-2xl">
+        <div className="mb-12 text-center">
+          <h1 className="mb-4 text-center font-bold text-4xl text-gray-800">
+            QR Code Generator
+          </h1>
+          <p className="font-light text-gray-600 text-lg">
+            Create beautiful QR codes in seconds
+          </p>
+        </div>
 
-        <div className="rounded-lg bg-white p-8 shadow-lg">
+        <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-lg">
           {/* Input Section */}
           <form
             onSubmit={(e) => {
@@ -104,10 +109,10 @@ function QRGenerate() {
             <form.Field
               name="inputText"
               children={(field) => (
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-3">
                   <label
                     htmlFor="qr-input"
-                    className="mb-2 block font-medium text-gray-700 text-sm"
+                    className="mb-2 block font-semibold text-gray-700 text-lg"
                   >
                     Enter URL or Text
                   </label>
@@ -119,19 +124,22 @@ function QRGenerate() {
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder="https://example.com or any text..."
-                      className={`flex-1 rounded-lg border px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500 ${
+                      className={`flex-1 rounded-lg border-2 bg-white px-6 py-4 text-lg placeholder-gray-400 outline-none transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 ${
                         field.state.meta.errors.length > 0
-                          ? 'border-red-300 focus:ring-red-500'
-                          : 'border-gray-300'
+                          ? 'border-red-400 focus:ring-red-300'
+                          : 'border-gray-300 focus:ring-blue-500'
                       }`}
                     />
                   </div>
                   {field.state.meta.errors.length > 0 && (
-                    <p className="m-1 text-red-500 text-sm">
-                      {typeof field.state.meta.errors[0] === 'string'
-                        ? field.state.meta.errors[0]
-                        : field.state.meta.errors[0]?.message}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg text-red-500">⚠️</span>
+                      <p className="font-medium text-red-500 text-sm">
+                        {typeof field.state.meta.errors[0] === 'string'
+                          ? field.state.meta.errors[0]
+                          : field.state.meta.errors[0]?.message}
+                      </p>
+                    </div>
                   )}
                 </div>
               )}
@@ -139,27 +147,32 @@ function QRGenerate() {
             <form.Field
               name="color"
               children={(field) => (
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="qr-input"
-                    className="mb-2 block font-medium text-gray-700 text-sm"
+                    htmlFor="qr-color"
+                    className="mb-2 block font-semibold text-gray-700 text-lg"
                   >
                     Choose Color for QR Code
                   </label>
-                  <div className="flex gap-4">
+                  <div className="flex items-center gap-4">
                     <input
                       id="qr-color"
                       name={field.name}
                       value={field.state.value ?? ''}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      className={`h-10 flex-1 rounded-lg border p-2 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500 ${
+                      className={`h-16 w-20 cursor-pointer rounded-lg border-2 border-gray-300 outline-none transition-all duration-200 hover:scale-105 focus:border-transparent focus:ring-2 focus:ring-blue-500 ${
                         field.state.meta.errors.length > 0
-                          ? 'border-red-300 focus:ring-red-500'
-                          : 'border-gray-300'
+                          ? 'border-red-400 focus:ring-red-300'
+                          : 'border-gray-300 focus:ring-blue-500'
                       }`}
                       type="color"
                     />
+                    <div className="flex-1 rounded-lg bg-gray-50 px-4 py-3">
+                      <span className="font-medium text-gray-700">
+                        Selected: {field.state.value || '#000000'}
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -173,12 +186,17 @@ function QRGenerate() {
             >
               {([isSubmitting, canSubmit, isDefaultValue]) => {
                 return (
-                  <Button
-                    disabled={isSubmitting || !canSubmit || isDefaultValue}
-                    variant="primary"
-                    label={isGenerating ? 'Generating...' : 'Generate'}
-                    type="submit"
-                  />
+                  <div className="mt-8 flex justify-center">
+                    <Button
+                      disabled={isSubmitting || !canSubmit || isDefaultValue}
+                      variant="primary"
+                      label={
+                        isGenerating ? 'Generating...' : '🚀 Generate QR Code'
+                      }
+                      type="submit"
+                      className={`${isGenerating ? 'loading' : ''} px-12 py-4 text-xl transition-all duration-200`}
+                    />
+                  </div>
                 );
               }}
             </form.Subscribe>
@@ -186,32 +204,34 @@ function QRGenerate() {
 
           {/* QR Code Display Section */}
           {qrCodeUrl && (
-            <div className="text-center">
-              <div className="mb-6 rounded-lg bg-gray-50 p-6">
-                <h3 className="mb-4 font-semibold text-gray-700 text-lg">
+            <div className="mt-12 text-center">
+              <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-8 shadow-lg">
+                <h3 className="mb-6 font-bold text-2xl text-gray-800">
                   Generated QR Code
                 </h3>
                 <div className="flex justify-center">
                   <img
                     src={qrCodeUrl}
                     alt="Generated QR Code"
-                    className="rounded-lg border border-gray-200 shadow-sm"
+                    className="rounded-lg border-2 border-gray-200 shadow-lg"
                   />
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-center gap-4">
+              <div className="flex justify-center gap-6">
                 <Button
                   onClick={downloadQRCode}
                   variant="success"
                   label="Download PNG"
                   icon={faDownload}
+                  className="px-8 py-4 text-lg transition-all duration-200"
                 />
                 <Button
                   onClick={clearQRCode}
                   variant="secondary"
                   label="Clear"
+                  className="px-8 py-4 text-lg transition-all duration-200"
                 />
               </div>
             </div>
