@@ -33,6 +33,7 @@ const qrInputSchema = z.object({
     .min(1, 'Please enter a background color')
     .optional()
     .nullable(),
+  centerImage: z.string().optional().nullable(),
 });
 
 type QRFormData = z.infer<typeof qrInputSchema>;
@@ -40,6 +41,7 @@ type QRFormData = z.infer<typeof qrInputSchema>;
 function QRGenerate() {
   const [qrCodeUrl, setQrCodeUrl] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [imagePreview, setImagePreview] = useState('');
 
   // TanStack Form setup
   const form = useForm({
@@ -47,6 +49,7 @@ function QRGenerate() {
       inputText: '',
       foregroundColor: '#000000',
       backgroundColor: '#FFFFFF',
+      centerImage: null,
     } as QRFormData,
     validators: {
       onChange: qrInputSchema,
@@ -62,7 +65,8 @@ function QRGenerate() {
           height: 300,
           type: 'svg',
           data: value.inputText,
-          image: '',
+          image: value.centerImage || '',
+          margin: 20,
           dotsOptions: {
             color: value.foregroundColor ?? '#000000',
             type: 'rounded',
@@ -77,6 +81,10 @@ function QRGenerate() {
           cornersDotOptions: {
             color: value.foregroundColor ?? '#000000',
             type: 'dot',
+          },
+          imageOptions: {
+            crossOrigin: 'anonymous',
+            margin: 4,
           },
         });
 
@@ -120,6 +128,7 @@ function QRGenerate() {
 
   const clearQRCode = () => {
     setQrCodeUrl('');
+    setImagePreview('');
     form.reset();
   };
 
@@ -185,75 +194,147 @@ function QRGenerate() {
                 </div>
               )}
             />
-            {/* Foreground Color Field */}
+            {/* Color Fields Container */}
+            <div className="flex animate-fade-in flex-col gap-4 sm:flex-row sm:gap-6">
+              {/* Foreground Color Field */}
+              <form.Field
+                name="foregroundColor"
+                children={(field) => (
+                  <div className="flex flex-1 flex-col gap-3">
+                    <label
+                      htmlFor="qr-foreground-color"
+                      className="mb-2 block font-semibold text-gray-800 text-lg"
+                    >
+                      QR Code Color (Foreground)
+                    </label>
+                    <div className="flex items-center gap-4">
+                      <input
+                        id="qr-foreground-color"
+                        name={field.name}
+                        value={field.state.value ?? ''}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className={`h-12 w-20 cursor-pointer rounded-xl border-2 border-indigo-200 p-2 outline-none transition-all duration-300 hover:scale-110 hover:shadow-lg focus:border-transparent focus:ring-2 focus:ring-indigo-500 ${
+                          field.state.meta.errors.length > 0
+                            ? 'border-red-400 focus:ring-red-300'
+                            : 'border-indigo-200 focus:ring-indigo-500'
+                        }`}
+                        type="color"
+                      />
+                      <div className="flex-1 rounded-xl border border-indigo-100 bg-gradient-to-r from-indigo-50 to-cyan-50 px-4 py-3">
+                        <span className="font-medium text-gray-700">
+                          Selected: {field.state.value || '#000000'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              />
+
+              {/* Background Color Field */}
+              <form.Field
+                name="backgroundColor"
+                children={(field) => (
+                  <div className="flex flex-1 flex-col gap-3">
+                    <label
+                      htmlFor="qr-background-color"
+                      className="mb-2 block font-semibold text-gray-800 text-lg"
+                    >
+                      Background Color
+                    </label>
+                    <div className="flex items-center gap-4">
+                      <input
+                        id="qr-background-color"
+                        name={field.name}
+                        value={field.state.value ?? ''}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className={`h-12 w-20 cursor-pointer rounded-xl border-2 border-indigo-200 p-2 outline-none transition-all duration-300 hover:scale-110 hover:shadow-lg focus:border-transparent focus:ring-2 focus:ring-indigo-500 ${
+                          field.state.meta.errors.length > 0
+                            ? 'border-red-400 focus:ring-red-300'
+                            : 'border-indigo-200 focus:ring-indigo-500'
+                        }`}
+                        type="color"
+                      />
+                      <div className="flex-1 rounded-xl border border-indigo-100 bg-gradient-to-r from-indigo-50 to-cyan-50 px-4 py-3">
+                        <span className="font-medium text-gray-700">
+                          Selected: {field.state.value || '#FFFFFF'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              />
+            </div>
+
+            {/* Center Image Upload Field */}
             <form.Field
-              name="foregroundColor"
+              name="centerImage"
               children={(field) => (
                 <div className="flex animate-fade-in flex-col gap-3">
                   <label
-                    htmlFor="qr-foreground-color"
+                    htmlFor="qr-center-image"
                     className="mb-2 block font-semibold text-gray-800 text-lg"
                   >
-                    QR Code Color (Foreground)
+                    Center Image (Optional)
                   </label>
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-col gap-4">
                     <input
-                      id="qr-foreground-color"
+                      id="qr-center-image"
                       name={field.name}
-                      value={field.state.value ?? ''}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      className={`h-12 w-20 cursor-pointer rounded-xl border-2 border-indigo-200 outline-none transition-all duration-300 hover:scale-110 hover:shadow-lg focus:border-transparent focus:ring-2 focus:ring-indigo-500 ${
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = (event) => {
+                            const result = event.target?.result as string;
+                            field.handleChange(result);
+                            setImagePreview(result);
+                          };
+                          reader.readAsDataURL(file);
+                        } else {
+                          field.handleChange(null);
+                          setImagePreview('');
+                        }
+                      }}
+                      className={`rounded-xl border-2 border-indigo-200 bg-white/90 px-4 py-3 text-base outline-none backdrop-blur-sm transition-all duration-300 hover:shadow-md focus:border-transparent focus:shadow-lg focus:ring-2 focus:ring-indigo-500 ${
                         field.state.meta.errors.length > 0
                           ? 'border-red-400 focus:ring-red-300'
                           : 'border-indigo-200 focus:ring-indigo-500'
                       }`}
-                      type="color"
                     />
-                    <div className="flex-1 rounded-xl border border-indigo-100 bg-gradient-to-r from-indigo-50 to-cyan-50 px-4 py-3">
-                      <span className="font-medium text-gray-700">
-                        Selected: {field.state.value || '#000000'}
-                      </span>
-                    </div>
+                    {imagePreview && (
+                      <div className="flex justify-center">
+                        <div className="relative">
+                          <img
+                            src={imagePreview}
+                            alt="Center logo preview"
+                            className="h-20 w-20 rounded-xl border-2 border-indigo-200 object-cover shadow-lg"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              field.handleChange(null);
+                              setImagePreview('');
+                            }}
+                            className="-right-2 -top-2 absolute flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    <p className="text-gray-500 text-sm">
+                      Upload a small image (logo, icon) to place at the center
+                      of the QR code
+                    </p>
                   </div>
                 </div>
               )}
             />
 
-            {/* Background Color Field */}
-            <form.Field
-              name="backgroundColor"
-              children={(field) => (
-                <div className="flex animate-fade-in flex-col gap-3">
-                  <label
-                    htmlFor="qr-background-color"
-                    className="mb-2 block font-semibold text-gray-800 text-lg"
-                  >
-                    Background Color
-                  </label>
-                  <div className="flex items-center gap-4">
-                    <input
-                      id="qr-background-color"
-                      name={field.name}
-                      value={field.state.value ?? ''}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      className={`h-12 w-20 cursor-pointer rounded-xl border-2 border-indigo-200 outline-none transition-all duration-300 hover:scale-110 hover:shadow-lg focus:border-transparent focus:ring-2 focus:ring-indigo-500 ${
-                        field.state.meta.errors.length > 0
-                          ? 'border-red-400 focus:ring-red-300'
-                          : 'border-indigo-200 focus:ring-indigo-500'
-                      }`}
-                      type="color"
-                    />
-                    <div className="flex-1 rounded-xl border border-indigo-100 bg-gradient-to-r from-indigo-50 to-cyan-50 px-4 py-3">
-                      <span className="font-medium text-gray-700">
-                        Selected: {field.state.value || '#FFFFFF'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            />
             <form.Subscribe
               selector={(state) => [
                 state.isSubmitting,
