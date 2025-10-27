@@ -1,26 +1,31 @@
 # QR Code Generator
 
-A modern, responsive web application for generating QR codes from URLs or text. Built with React, TypeScript, Vite, and Tailwind CSS.
+A modern, responsive web application for generating customizable QR codes from URLs or text. Built with React, TypeScript, Vite, and Tailwind CSS.
 
 ## Features
 
 - 🚀 **Fast QR Code Generation** - Generate QR codes instantly from any text or URL
+- 🎨 **Customizable Colors** - Choose custom foreground and background colors
+- 🖼️ **Center Image Support** - Add logos or icons at the center of QR codes
 - 📱 **Mobile Responsive** - Works perfectly on desktop and mobile devices
-- 🎨 **Modern UI** - Clean, intuitive interface with Tailwind CSS styling
+- 🎯 **Modern UI** - Clean, intuitive interface with Tailwind CSS styling
 - 💾 **Download Support** - Save generated QR codes as PNG files
 - ⚡ **TypeScript** - Full type safety and better development experience
 - 🔧 **Modern Tooling** - Built with Vite for fast development and builds
 
 ## Screenshots
 
-The application features a clean, gradient background with a centered form for inputting text or URLs. Generated QR codes are displayed prominently with download and clear options.
+The application features a clean, gradient background with a centered form for inputting text or URLs. Users can customize QR code colors, add center images, and generate professional-looking QR codes with download and clear options.
 
 ## Tech Stack
 
 - **Frontend**: React 19 with TypeScript
 - **Build Tool**: Vite
 - **Styling**: Tailwind CSS v4
-- **QR Code Library**: qrcode.js
+- **QR Code Library**: qr-code-styling
+- **Form Management**: TanStack React Form
+- **Validation**: Zod
+- **Icons**: Font Awesome
 - **Package Manager**: Bun
 - **Linting**: Biome
 - **Development**: Hot Module Replacement (HMR)
@@ -79,16 +84,38 @@ bun run preview
 ## Usage
 
 1. **Enter Text or URL**: Type any text or URL in the input field
-2. **Generate QR Code**: Click the "Generate" button or press Enter
-3. **Download**: Click "Download PNG" to save the QR code to your device
-4. **Clear**: Use the "Clear" button to reset and start over
+2. **Customize Colors**: Choose custom foreground and background colors using the color pickers
+3. **Add Center Image** (Optional): Upload a logo or icon to place at the center of the QR code
+4. **Generate QR Code**: Click the "Generate" button or press Enter
+5. **Download**: Click "Download PNG" to save the QR code to your device
+6. **Clear**: Use the "Clear" button to reset and start over
 
 ## QR Code Features
 
-- **Size**: 300x300 pixels with 2px margin
-- **Colors**: Black on white background
+- **Size**: 300x300 pixels with 20px margin
+- **Colors**: Customizable foreground and background colors
+- **Style**: Rounded dots and corners for modern appearance
+- **Center Image**: Optional logo/icon placement with proper spacing
 - **Format**: PNG with high quality
 - **Compatibility**: Works with all standard QR code scanners
+
+## Customization Options
+
+### Color Customization
+- **Foreground Color**: Choose any color for the QR code pattern
+- **Background Color**: Select custom background colors
+- **Real-time Preview**: See color changes instantly in the UI
+
+### Center Image Features
+- **Image Upload**: Support for all common image formats (PNG, JPG, GIF, etc.)
+- **Image Preview**: See uploaded image before generating QR code
+- **Automatic Sizing**: Images are automatically sized to fit properly
+- **Easy Removal**: One-click removal of center images
+
+### QR Code Styling
+- **Rounded Elements**: Modern rounded dots and corner squares
+- **Professional Appearance**: Clean, branded look for business use
+- **High Quality**: 300x300 pixel output with crisp details
 
 ## Project Structure
 
@@ -97,14 +124,20 @@ qr-generate/
 ├── public/
 │   └── vite.svg
 ├── src/
-│   ├── App.tsx          # Main QR generator component
-│   ├── main.tsx         # Application entry point
-│   ├── index.css        # Global styles
-│   └── vite-env.d.ts    # Vite type definitions
-├── package.json         # Dependencies and scripts
-├── vite.config.ts       # Vite configuration
-├── tsconfig.json        # TypeScript configuration
-└── biome.json          # Biome linting configuration
+│   ├── components/
+│   │   ├── Background.tsx    # Animated background component
+│   │   └── Button.tsx        # Reusable button component
+│   ├── QRGenarate/
+│   │   └── index.tsx         # Main QR generator component
+│   ├── lib/
+│   │   └── helper.ts         # Utility functions
+│   ├── main.tsx              # Application entry point
+│   ├── index.css             # Global styles
+│   └── vite-env.d.ts         # Vite type definitions
+├── package.json              # Dependencies and scripts
+├── vite.config.ts            # Vite configuration
+├── tsconfig.json             # TypeScript configuration
+└── biome.json               # Biome linting configuration
 ```
 
 ## Development
@@ -141,7 +174,10 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## Acknowledgments
 
-- [qrcode.js](https://github.com/soldair/node-qrcode) for QR code generation
+- [qr-code-styling](https://github.com/kozakdenys/qr-code-styling) for advanced QR code generation with styling options
+- [TanStack React Form](https://tanstack.com/form) for form management
+- [Zod](https://zod.dev/) for schema validation
+- [Font Awesome](https://fontawesome.com/) for icons
 - [Tailwind CSS](https://tailwindcss.com/) for styling
 - [Vite](https://vitejs.dev/) for build tooling
 - [React](https://react.dev/) for the UI framework

@@ -133,20 +133,20 @@ function QRGenerate() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-cyan-50 px-2 py-4 sm:px-4 sm:py-8">
+    <div className="relative min-h-screen overflow-hidden px-2 py-4 sm:px-4 sm:py-8">
       <Background />
 
-      <div className="relative z-20 mx-auto max-w-2xl px-4 sm:px-0">
-        <div className="mb-4 animate-fade-in text-center">
-          <h1 className="mb-4 animate-slide-down bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-center font-bold text-3xl text-transparent sm:text-5xl">
+      <div className="relative z-20 mx-auto max-w-4xl px-4 sm:px-0">
+        <div className="mb-8 animate-fade-in text-center">
+          <h1 className="mb-6 animate-slide-down bg-linear-to-r from-white via-cyan-200 to-purple-200 bg-clip-text text-center font-bold text-4xl text-transparent sm:text-6xl">
             QR Code Generator
           </h1>
-          <p className="animate-fade-in-delay font-light text-gray-600 text-lg sm:text-xl">
-            Create beautiful QR codes in seconds
+          <p className="animate-fade-in-delay font-light text-lg text-white/80 sm:text-xl">
+            Create beautiful, customizable QR codes in seconds
           </p>
         </div>
 
-        <div className="animate-slide-up rounded-3xl border border-indigo-100 bg-white/80 p-4 shadow-xl backdrop-blur-sm sm:p-6">
+        <div className="animate-slide-up rounded-3xl border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur-xl sm:p-8">
           {/* Input Section */}
           <form
             onSubmit={(e) => {
@@ -159,10 +159,10 @@ function QRGenerate() {
             <form.Field
               name="inputText"
               children={(field) => (
-                <div className="flex animate-fade-in flex-col gap-3">
+                <div className="flex animate-fade-in flex-col gap-4">
                   <label
                     htmlFor="qr-input"
-                    className="mb-2 block font-semibold text-gray-800 text-lg"
+                    className="mb-2 block font-semibold text-lg text-white"
                   >
                     Enter URL or Text
                   </label>
@@ -174,17 +174,17 @@ function QRGenerate() {
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder="https://example.com or any text..."
-                      className={`flex-1 rounded-xl border-2 bg-white/90 px-4 py-3 text-base placeholder-gray-400 outline-none backdrop-blur-sm transition-all duration-300 hover:shadow-md focus:border-transparent focus:shadow-lg focus:ring-2 focus:ring-indigo-500 sm:px-6 sm:py-4 sm:text-lg ${
+                      className={`flex-1 rounded-2xl border-2 bg-white/10 px-6 py-4 text-base text-white placeholder-white/60 outline-none backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:shadow-lg focus:border-cyan-400 focus:bg-white/20 focus:shadow-xl focus:ring-2 focus:ring-cyan-400/50 sm:px-8 sm:py-5 sm:text-lg ${
                         field.state.meta.errors.length > 0
-                          ? 'border-red-400 focus:ring-red-300'
-                          : 'border-indigo-200 focus:ring-indigo-500'
+                          ? 'border-red-400 focus:ring-red-400/50'
+                          : 'border-white/30 focus:ring-cyan-400/50'
                       }`}
                     />
                   </div>
                   {field.state.meta.errors.length > 0 && (
                     <div className="flex animate-shake items-center gap-2">
-                      <span className="text-lg text-red-500">⚠️</span>
-                      <p className="font-medium text-red-500 text-sm">
+                      <span className="text-lg text-red-400">⚠️</span>
+                      <p className="font-medium text-red-400 text-sm">
                         {typeof field.state.meta.errors[0] === 'string'
                           ? field.state.meta.errors[0]
                           : field.state.meta.errors[0]?.message}
@@ -195,15 +195,15 @@ function QRGenerate() {
               )}
             />
             {/* Color Fields Container */}
-            <div className="flex animate-fade-in flex-col gap-4 sm:flex-row sm:gap-6">
+            <div className="flex animate-fade-in flex-col gap-6 sm:flex-row sm:gap-8">
               {/* Foreground Color Field */}
               <form.Field
                 name="foregroundColor"
                 children={(field) => (
-                  <div className="flex flex-1 flex-col gap-3">
+                  <div className="flex flex-1 flex-col gap-4">
                     <label
                       htmlFor="qr-foreground-color"
-                      className="mb-2 block font-semibold text-gray-800 text-lg"
+                      className="mb-2 block font-semibold text-lg text-white"
                     >
                       QR Code Color (Foreground)
                     </label>
@@ -214,15 +214,15 @@ function QRGenerate() {
                         value={field.state.value ?? ''}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
-                        className={`h-12 w-20 cursor-pointer rounded-xl border-2 border-indigo-200 p-2 outline-none transition-all duration-300 hover:scale-110 hover:shadow-lg focus:border-transparent focus:ring-2 focus:ring-indigo-500 ${
+                        className={`h-14 w-16 cursor-pointer rounded-2xl border-2 border-white/30 p-2 outline-none transition-all duration-300 hover:scale-110 hover:shadow-xl focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/50 ${
                           field.state.meta.errors.length > 0
-                            ? 'border-red-400 focus:ring-red-300'
-                            : 'border-indigo-200 focus:ring-indigo-500'
+                            ? 'border-red-400 focus:ring-red-400/50'
+                            : 'border-white/30 focus:ring-cyan-400/50'
                         }`}
                         type="color"
                       />
-                      <div className="flex-1 rounded-xl border border-indigo-100 bg-gradient-to-r from-indigo-50 to-cyan-50 px-4 py-3">
-                        <span className="font-medium text-gray-700">
+                      <div className="flex-1 rounded-2xl border border-white/20 bg-white/10 px-6 py-4 backdrop-blur-sm">
+                        <span className="font-medium text-white/90">
                           Selected: {field.state.value || '#000000'}
                         </span>
                       </div>
@@ -235,10 +235,10 @@ function QRGenerate() {
               <form.Field
                 name="backgroundColor"
                 children={(field) => (
-                  <div className="flex flex-1 flex-col gap-3">
+                  <div className="flex flex-1 flex-col gap-4">
                     <label
                       htmlFor="qr-background-color"
-                      className="mb-2 block font-semibold text-gray-800 text-lg"
+                      className="mb-2 block font-semibold text-lg text-white"
                     >
                       Background Color
                     </label>
@@ -249,15 +249,15 @@ function QRGenerate() {
                         value={field.state.value ?? ''}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
-                        className={`h-12 w-20 cursor-pointer rounded-xl border-2 border-indigo-200 p-2 outline-none transition-all duration-300 hover:scale-110 hover:shadow-lg focus:border-transparent focus:ring-2 focus:ring-indigo-500 ${
+                        className={`h-14 w-16 cursor-pointer rounded-2xl border-2 border-white/30 p-2 outline-none transition-all duration-300 hover:scale-110 hover:shadow-xl focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/50 ${
                           field.state.meta.errors.length > 0
-                            ? 'border-red-400 focus:ring-red-300'
-                            : 'border-indigo-200 focus:ring-indigo-500'
+                            ? 'border-red-400 focus:ring-red-400/50'
+                            : 'border-white/30 focus:ring-cyan-400/50'
                         }`}
                         type="color"
                       />
-                      <div className="flex-1 rounded-xl border border-indigo-100 bg-gradient-to-r from-indigo-50 to-cyan-50 px-4 py-3">
-                        <span className="font-medium text-gray-700">
+                      <div className="flex-1 rounded-2xl border border-white/20 bg-white/10 px-6 py-4 backdrop-blur-sm">
+                        <span className="font-medium text-white/90">
                           Selected: {field.state.value || '#FFFFFF'}
                         </span>
                       </div>
@@ -271,14 +271,14 @@ function QRGenerate() {
             <form.Field
               name="centerImage"
               children={(field) => (
-                <div className="flex animate-fade-in flex-col gap-3">
+                <div className="flex animate-fade-in flex-col gap-4">
                   <label
                     htmlFor="qr-center-image"
-                    className="mb-2 block font-semibold text-gray-800 text-lg"
+                    className="mb-2 block font-semibold text-lg text-white"
                   >
                     Center Image (Optional)
                   </label>
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-6">
                     <input
                       id="qr-center-image"
                       name={field.name}
@@ -299,19 +299,19 @@ function QRGenerate() {
                           setImagePreview('');
                         }
                       }}
-                      className={`rounded-xl border-2 border-indigo-200 bg-white/90 px-4 py-3 text-base outline-none backdrop-blur-sm transition-all duration-300 hover:shadow-md focus:border-transparent focus:shadow-lg focus:ring-2 focus:ring-indigo-500 ${
+                      className={`rounded-2xl border-2 border-white/30 bg-white/10 px-6 py-4 text-base text-white outline-none backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:shadow-lg focus:border-cyan-400 focus:bg-white/20 focus:shadow-xl focus:ring-2 focus:ring-cyan-400/50 ${
                         field.state.meta.errors.length > 0
-                          ? 'border-red-400 focus:ring-red-300'
-                          : 'border-indigo-200 focus:ring-indigo-500'
+                          ? 'border-red-400 focus:ring-red-400/50'
+                          : 'border-white/30 focus:ring-cyan-400/50'
                       }`}
                     />
                     {imagePreview && (
                       <div className="flex justify-center">
-                        <div className="relative">
+                        <div className="group relative">
                           <img
                             src={imagePreview}
                             alt="Center logo preview"
-                            className="h-20 w-20 rounded-xl border-2 border-indigo-200 object-cover shadow-lg"
+                            className="h-24 w-24 rounded-2xl border-2 border-white/30 object-cover shadow-2xl transition-all duration-300 group-hover:scale-105"
                           />
                           <button
                             type="button"
@@ -319,14 +319,14 @@ function QRGenerate() {
                               field.handleChange(null);
                               setImagePreview('');
                             }}
-                            className="-right-2 -top-2 absolute flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600"
+                            className="-right-2 -top-2 absolute flex h-7 w-7 items-center justify-center rounded-full bg-red-500 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-red-600"
                           >
                             ×
                           </button>
                         </div>
                       </div>
                     )}
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-center text-sm text-white/70">
                       Upload a small image (logo, icon) to place at the center
                       of the QR code
                     </p>
@@ -344,7 +344,7 @@ function QRGenerate() {
             >
               {([isSubmitting, canSubmit, isDefaultValue]) => {
                 return (
-                  <div className="mt-8 flex animate-fade-in justify-center">
+                  <div className="mt-10 flex animate-fade-in justify-center">
                     <Button
                       disabled={isSubmitting || !canSubmit || isDefaultValue}
                       variant="primary"
@@ -352,7 +352,7 @@ function QRGenerate() {
                         isGenerating ? 'Generating...' : '🚀 Generate QR Code'
                       }
                       type="submit"
-                      className={`${isGenerating ? 'loading' : ''} w-full px-8 py-3 text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-auto sm:px-12 sm:py-4 sm:text-xl`}
+                      className={`${isGenerating ? 'loading' : ''} w-full px-10 py-4 font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl sm:w-auto sm:px-16 sm:py-5 sm:text-xl`}
                     />
                   </div>
                 );
@@ -362,34 +362,37 @@ function QRGenerate() {
 
           {/* QR Code Display Section */}
           {qrCodeUrl && (
-            <div className="mt-8 animate-fade-in text-center sm:mt-12">
-              <div className="mb-6 animate-slide-up rounded-3xl border border-indigo-100 bg-white/90 p-4 shadow-xl backdrop-blur-sm sm:mb-8 sm:p-8">
-                <h3 className="mb-4 bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text font-bold text-2xl text-transparent sm:mb-6 sm:text-3xl">
+            <div className="mt-12 animate-fade-in text-center">
+              <div className="mb-8 animate-slide-up rounded-3xl border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur-xl sm:p-12">
+                <h3 className="mb-6 bg-linear-to-r from-white via-cyan-200 to-purple-200 bg-clip-text font-bold text-3xl text-transparent sm:text-4xl">
                   Generated QR Code
                 </h3>
                 <div className="flex justify-center">
-                  <img
-                    src={qrCodeUrl}
-                    alt="Generated QR Code"
-                    className="h-auto max-w-full rounded-2xl border-2 border-indigo-200 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-3xl"
-                  />
+                  <div className="group relative">
+                    <img
+                      src={qrCodeUrl}
+                      alt="Generated QR Code"
+                      className="h-auto max-w-full rounded-3xl border-2 border-white/30 shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:shadow-3xl"
+                    />
+                    <div className="absolute inset-0 rounded-3xl bg-linear-to-t from-transparent via-transparent to-white/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  </div>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex animate-fade-in-delay flex-col gap-4 sm:flex-row sm:justify-center sm:gap-6">
+              <div className="flex animate-fade-in-delay flex-col gap-6 sm:flex-row sm:justify-center sm:gap-8">
                 <Button
                   onClick={downloadQRCode}
                   variant="success"
                   label="Download PNG"
                   icon={faDownload}
-                  className="w-full px-6 py-3 text-base transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-auto sm:px-8 sm:py-4 sm:text-lg"
+                  className="w-full px-8 py-4 font-semibold text-base transition-all duration-300 hover:scale-105 hover:shadow-2xl sm:w-auto sm:px-10 sm:py-5 sm:text-lg"
                 />
                 <Button
                   onClick={clearQRCode}
                   variant="secondary"
                   label="Clear"
-                  className="w-full px-6 py-3 text-base transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-auto sm:px-8 sm:py-4 sm:text-lg"
+                  className="w-full px-8 py-4 font-semibold text-base transition-all duration-300 hover:scale-105 hover:shadow-2xl sm:w-auto sm:px-10 sm:py-5 sm:text-lg"
                 />
               </div>
             </div>
