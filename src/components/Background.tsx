@@ -16,7 +16,7 @@ const Background = () => {
 
       {/* Geometric patterns */}
       <div className="absolute top-20 left-20 h-2 w-2 animate-pulse rounded-full bg-white/40" />
-      <div className="absolute top-32 right-32 h-1 w-1 animate-pulse rounded-full bg-cyan-400/60" />
+      <div className="absolute top-32 right-32 h-1 w-1 animate-pulse rounded-full bg-cyan-400/50" />
       <div className="absolute bottom-32 left-32 h-1.5 w-1.5 animate-pulse rounded-full bg-purple-400/50" />
       <div className="absolute right-20 bottom-20 h-2 w-2 animate-pulse rounded-full bg-pink-400/40" />
 
